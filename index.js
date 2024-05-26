@@ -1,41 +1,44 @@
+const CVS_W = 500;
+const CVS_H = 500;
+const BLOCK_LENGTH = 10;
+const MAX_LEVEL = 1;
+const SHOW_TEXT = 0;
+const DELAY = 500;
+const BLOCK_MARGIN_CENTAGE = 0;
+const MIN_SHOW_LEVEL = 1;
+
 const cvs = document.getElementById("cvs");
-const cvsW = 1400;
-const cvsH = 1200;
-cvs.width = cvsW;
-cvs.height = cvsH;
-
-const blockL = 50;
-const nBlockW = cvsW / blockL;
-const nBlockH = cvsH / blockL;
-console.log({ nBlockW, nBlockH });
-
+const nBlockW = CVS_W / BLOCK_LENGTH;
+const nBlockH = CVS_H / BLOCK_LENGTH;
 const ctx = cvs.getContext("2d");
-ctx.font = blockL + "px serlf";
-
-const maxLevel = 1;
-
-const SHOW_TEXT = false;
 
 let map = Array.from(new Array(nBlockH), () => new Array(nBlockW).fill(0));
 
-const drawBlock = (x, y, level) => {
-    const x1 = x * blockL;
-    const y1 = y * blockL;
-    const marginCentage = 0.2;
-    const x2 = x1 + blockL / 2 * marginCentage;
-    const y2 = y1 + blockL / 2 * marginCentage;
+ctx.font = BLOCK_LENGTH + "px serlf";
+cvs.width = CVS_W;
+cvs.height = CVS_H;
 
-    const alpha = level / maxLevel;
+console.log({ nBlockW, nBlockH });
+
+const drawBlock = (x, y, level) => {
+    if (level < MIN_SHOW_LEVEL) return;
+
+    const x1 = x * BLOCK_LENGTH;
+    const y1 = y * BLOCK_LENGTH;
+    const x2 = x1 + BLOCK_LENGTH / 2 * BLOCK_MARGIN_CENTAGE;
+    const y2 = y1 + BLOCK_LENGTH / 2 * BLOCK_MARGIN_CENTAGE;
+
+    const alpha = level / MAX_LEVEL;
     ctx.fillStyle = "rgba(255, 255, 255, " + alpha + ")";
-    ctx.fillRect(x2, y2, blockL * (1 - marginCentage), blockL * (1 - marginCentage));
+    ctx.fillRect(x2, y2, BLOCK_LENGTH * (1 - BLOCK_MARGIN_CENTAGE), BLOCK_LENGTH * (1 - BLOCK_MARGIN_CENTAGE));
 
     ctx.fillStyle = "blue";
-    if (level && SHOW_TEXT)
-        ctx.fillText(level, x1 + blockL / 3.5, y1 + blockL * 0.8);
+    if (SHOW_TEXT)
+        ctx.fillText(level, x1 + BLOCK_LENGTH / 3.5, y1 + BLOCK_LENGTH * 0.8, BLOCK_LENGTH * (1 - BLOCK_MARGIN_CENTAGE));
 }
 
 const drawMap = () => {
-    ctx.clearRect(0, 0, cvsW, cvsH);
+    ctx.clearRect(0, 0, CVS_W, CVS_H);
     for (let y = 0; y < nBlockH; y++) {
         for (let x = 0; x < nBlockW; x++) {
             drawBlock(x, y, map[y][x]);
@@ -112,7 +115,7 @@ const next = () => {
                 newMap[y][x]++;
             }
         }
-        if (newMap[y][x] > maxLevel) newMap[y][x] = maxLevel;
+        if (newMap[y][x] > MAX_LEVEL) newMap[y][x] = MAX_LEVEL;
         if (newMap[y][x] < 0) newMap[y][x] = 0;
     }
 
@@ -146,19 +149,13 @@ const uiCheck = () => {
 
 for (let y = 0; y < nBlockH; y++) {
     for (let x = 0; x < nBlockW; x++) {
-        let l = Math.floor(Math.random() * (maxLevel + 1));
+        let l = Math.floor(Math.random() * (MAX_LEVEL + 1));
         setBlock(x, y, l);
     }
 }
-
-// setBlock(0, 0, 4);
-// setBlock(0, 1, 6);
-// setBlock(1, 6, 8);
-// setBlock(1, 1, 4);
-// setBlock(6, 0, 6);
-// setBlock(0, 5, 5);
-// setBlock(6, 5, 7);
-
 drawMap();
 
-setInterval(()=>{next();drawMap();}, 500);
+setInterval(() => {
+    next();
+    drawMap();
+}, DELAY);
