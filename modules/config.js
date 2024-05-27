@@ -1,0 +1,10 @@
+export const CVS_W = 500;
+export const CVS_H = 500;
+export const BLOCK_LENGTH = 10;
+export const MAX_LEVEL = 1;
+export const SHOW_TEXT = 0;
+export const DELAY = 500;
+export const BLOCK_MARGIN_CENTAGE = 0;
+export const MIN_SHOW_LEVEL = 1;
+export const BLOCK_COLOR = [255, 255, 255];
+export const FONT_COLOR = "blue";
