@@ -1,49 +1,61 @@
 import { deepClone } from "./utils.js";
-import * as exports from "./config.js"
-Object.assign(window, exports);
 
 export class Canvas {
     constructor(cvs) {
         this.cvs = cvs;
-        this.cvs.width = CVS_W;
-        this.cvs.height = CVS_H;
         this.ctx = cvs.getContext("2d");
-        this.ctx.font = BLOCK_LENGTH + "px serlf";
-
-        // initialize
-        (() => {
-            this.randomMap();
-            this.drawMap();
-            setInterval(() => {
-                this.next();
-                this.drawMap();
-            }, DELAY);
-        })()
+        this.initiate();
     }
 
-    nBlockW = CVS_W / BLOCK_LENGTH;
-    nBlockH = CVS_H / BLOCK_LENGTH;
-    map = Array.from(new Array(this.nBlockH), () => new Array(this.nBlockW).fill(0));
+    get nBlockW() { return window.CVS_W / window.BLOCK_LENGTH; }
+    get nBlockH() { return window.CVS_H / window.BLOCK_LENGTH; }
+
+    nIntervId = null;
+
+    initiate() {
+        this.stopTimer();
+        this.map = new Array(this.nBlockH).fill(0).map(v=>new Array(this.nBlockW).fill(0));
+        this.cvs.width = window.CVS_W;
+        this.cvs.height = window.CVS_H;
+        this.ctx.font = window.BLOCK_LENGTH + "px serlf";
+        this.randomMap();
+        this.drawMap();
+        this.startTimer();
+    }
+
+    startTimer() {
+        this.drawMap();
+        if (!this.nIntervId)
+            this.nIntervId = setInterval(() => {
+                this.next();
+                this.drawMap();
+            }, window.DELAY);
+    }
+
+    stopTimer() {
+        clearInterval(this.nIntervId);
+        this.nIntervId = null;
+    }
 
     drawBlock(x, y, level) {
-        if (level < MIN_SHOW_LEVEL) return;
+        if (level < window.BLOCK_MIN_SHOW_LEVEL) return;
 
-        const x1 = x * BLOCK_LENGTH;
-        const y1 = y * BLOCK_LENGTH;
-        const x2 = x1 + BLOCK_LENGTH / 2 * BLOCK_MARGIN_CENTAGE;
-        const y2 = y1 + BLOCK_LENGTH / 2 * BLOCK_MARGIN_CENTAGE;
+        const x1 = x * window.BLOCK_LENGTH;
+        const y1 = y * window.BLOCK_LENGTH;
+        const x2 = x1 + window.BLOCK_LENGTH / 2 * window.BLOCK_MARGIN_CENTAGE;
+        const y2 = y1 + window.BLOCK_LENGTH / 2 * window.BLOCK_MARGIN_CENTAGE;
 
-        const alpha = level / MAX_LEVEL;
-        this.ctx.fillStyle = "rgba(" + BLOCK_COLOR + ", " + alpha + ")";
-        this.ctx.fillRect(x2, y2, BLOCK_LENGTH * (1 - BLOCK_MARGIN_CENTAGE), BLOCK_LENGTH * (1 - BLOCK_MARGIN_CENTAGE));
+        const alpha = level / window.BLOCK_MAX_LEVEL;
+        this.ctx.fillStyle = "rgba(" + window.BLOCK_COLOR + ", " + alpha + ")";
+        this.ctx.fillRect(x2, y2, window.BLOCK_LENGTH * (1 - window.BLOCK_MARGIN_CENTAGE), window.BLOCK_LENGTH * (1 - window.BLOCK_MARGIN_CENTAGE));
 
-        this.ctx.fillStyle = FONT_COLOR;
-        if (SHOW_TEXT)
-            this.ctx.fillText(level, x1 + BLOCK_LENGTH / 3.5, y1 + BLOCK_LENGTH * 0.8, BLOCK_LENGTH * (1 - BLOCK_MARGIN_CENTAGE));
+        this.ctx.fillStyle = window.TEXT_COLOR;
+        if (window.TEXT_SHOW)
+            this.ctx.fillText(level, x1 + window.BLOCK_LENGTH / 3.5, y1 + window.BLOCK_LENGTH * 0.8, window.BLOCK_LENGTH * (1 - window.BLOCK_MARGIN_CENTAGE));
     }
 
     drawMap() {
-        this.ctx.clearRect(0, 0, CVS_W, CVS_H);
+        this.ctx.clearRect(0, 0, window.CVS_W, window.CVS_H);
         for (let y = 0; y < this.nBlockH; y++) {
             for (let x = 0; x < this.nBlockW; x++) {
                 this.drawBlock(x, y, this.map[y][x]);
@@ -108,7 +120,7 @@ export class Canvas {
             // 死的
             else if (counter === 3) newMap[y][x]++;
 
-            if (newMap[y][x] > MAX_LEVEL) newMap[y][x] = MAX_LEVEL;
+            if (newMap[y][x] > window.BLOCK_MAX_LEVEL) newMap[y][x] = window.BLOCK_MAX_LEVEL;
             if (newMap[y][x] < 0) newMap[y][x] = 0;
         }
 
@@ -121,7 +133,7 @@ export class Canvas {
     randomMap() {
         for (let y = 0; y < this.nBlockH; y++) {
             const setBlock = (x, y, level) => this.map[y][x] = level;
-            for (let x = 0; x < this.nBlockW; x++) setBlock(x, y, Math.floor(Math.random() * (MAX_LEVEL + 1)));
+            for (let x = 0; x < this.nBlockW; x++) setBlock(x, y, Math.floor(Math.random() * (window.BLOCK_MAX_LEVEL + 1)));
         }
     }
 }
