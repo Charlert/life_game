@@ -7,6 +7,10 @@ window.cvso_config = {
         "type": "number",
         "value": 500
     },
+    "DELAY": {
+        "type": "number",
+        "value": 500
+    },
     "TEXT_SHOW": {
         "type": "number",
         "value": 0
@@ -34,9 +38,5 @@ window.cvso_config = {
     "BLOCK_MAX_LEVEL": {
         "type": "number",
         "value": 1
-    },
-    "DELAY": {
-        "type": "number",
-        "value": 500
     }
 };
