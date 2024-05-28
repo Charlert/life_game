@@ -33,7 +33,7 @@ window.cvso_config = {
     },
     "BLOCK_MAX_LEVEL": {
         "type": "number",
-        "value": 9
+        "value": 1
     },
     "DELAY": {
         "type": "number",
