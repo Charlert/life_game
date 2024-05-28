@@ -1,8 +1,17 @@
 body {
     margin: 0;
 }
-canvas {
+
+#cvs {
     background-color: black;
     border: 1px solid black;
     max-width: 100%;
+}
+
+.settings {
+    background-color: antiquewhite;
+}
+
+#app {
+    text-align: center;
 }
