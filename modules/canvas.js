@@ -7,17 +7,17 @@ export class Canvas {
         this.initiate();
     }
 
-    get nBlockW() { return window.CVS_W / window.BLOCK_LENGTH; }
-    get nBlockH() { return window.CVS_H / window.BLOCK_LENGTH; }
+    get nBlockW() { return window.cvso_config.CVS_W.value / window.cvso_config.BLOCK_LENGTH.value; }
+    get nBlockH() { return window.cvso_config.CVS_H.value / window.cvso_config.BLOCK_LENGTH.value; }
 
     nIntervId = null;
 
     initiate() {
         this.stopTimer();
         this.map = new Array(this.nBlockH).fill(0).map(v=>new Array(this.nBlockW).fill(0));
-        this.cvs.width = window.CVS_W;
-        this.cvs.height = window.CVS_H;
-        this.ctx.font = window.BLOCK_LENGTH + "px serlf";
+        this.cvs.width = window.cvso_config.CVS_W.value;
+        this.cvs.height = window.cvso_config.CVS_H.value;
+        this.ctx.font = window.cvso_config.BLOCK_LENGTH.value + "px serlf";
         this.randomMap();
         this.drawMap();
         this.startTimer();
@@ -29,7 +29,7 @@ export class Canvas {
             this.nIntervId = setInterval(() => {
                 this.next();
                 this.drawMap();
-            }, window.DELAY);
+            }, window.cvso_config.DELAY.value);
     }
 
     stopTimer() {
@@ -38,24 +38,24 @@ export class Canvas {
     }
 
     drawBlock(x, y, level) {
-        if (level < window.BLOCK_MIN_SHOW_LEVEL) return;
+        if (level < window.cvso_config.BLOCK_MIN_SHOW_LEVEL.value) return;
 
-        const x1 = x * window.BLOCK_LENGTH;
-        const y1 = y * window.BLOCK_LENGTH;
-        const x2 = x1 + window.BLOCK_LENGTH / 2 * window.BLOCK_MARGIN_CENTAGE;
-        const y2 = y1 + window.BLOCK_LENGTH / 2 * window.BLOCK_MARGIN_CENTAGE;
+        const x1 = x * window.cvso_config.BLOCK_LENGTH.value;
+        const y1 = y * window.cvso_config.BLOCK_LENGTH.value;
+        const x2 = x1 + window.cvso_config.BLOCK_LENGTH.value / 2 * window.cvso_config.BLOCK_MARGIN_CENTAGE.value;
+        const y2 = y1 + window.cvso_config.BLOCK_LENGTH.value / 2 * window.cvso_config.BLOCK_MARGIN_CENTAGE.value;
 
-        const alpha = level / window.BLOCK_MAX_LEVEL;
-        this.ctx.fillStyle = "rgba(" + window.BLOCK_COLOR + ", " + alpha + ")";
-        this.ctx.fillRect(x2, y2, window.BLOCK_LENGTH * (1 - window.BLOCK_MARGIN_CENTAGE), window.BLOCK_LENGTH * (1 - window.BLOCK_MARGIN_CENTAGE));
+        const alpha = level / window.cvso_config.BLOCK_MAX_LEVEL.value;
+        this.ctx.fillStyle = "rgba(" + window.cvso_config.BLOCK_COLOR.value + ", " + alpha + ")";
+        this.ctx.fillRect(x2, y2, window.cvso_config.BLOCK_LENGTH.value * (1 - window.cvso_config.BLOCK_MARGIN_CENTAGE.value), window.cvso_config.BLOCK_LENGTH.value * (1 - window.cvso_config.BLOCK_MARGIN_CENTAGE.value));
 
-        this.ctx.fillStyle = window.TEXT_COLOR;
-        if (window.TEXT_SHOW)
-            this.ctx.fillText(level, x1 + window.BLOCK_LENGTH / 3.5, y1 + window.BLOCK_LENGTH * 0.8, window.BLOCK_LENGTH * (1 - window.BLOCK_MARGIN_CENTAGE));
+        this.ctx.fillStyle = window.cvso_config.TEXT_COLOR.value;
+        if (window.cvso_config.TEXT_SHOW.value)
+            this.ctx.fillText(level, x1 + window.cvso_config.BLOCK_LENGTH.value / 3.5, y1 + window.cvso_config.BLOCK_LENGTH.value * 0.8, window.cvso_config.BLOCK_LENGTH.value * (1 - window.cvso_config.BLOCK_MARGIN_CENTAGE.value));
     }
 
     drawMap() {
-        this.ctx.clearRect(0, 0, window.CVS_W, window.CVS_H);
+        this.ctx.clearRect(0, 0, window.cvso_config.CVS_W.value, window.cvso_config.CVS_H.value);
         for (let y = 0; y < this.nBlockH; y++) {
             for (let x = 0; x < this.nBlockW; x++) {
                 this.drawBlock(x, y, this.map[y][x]);
@@ -120,7 +120,7 @@ export class Canvas {
             // 死的
             else if (counter === 3) newMap[y][x]++;
 
-            if (newMap[y][x] > window.BLOCK_MAX_LEVEL) newMap[y][x] = window.BLOCK_MAX_LEVEL;
+            if (newMap[y][x] > window.cvso_config.BLOCK_MAX_LEVEL.value) newMap[y][x] = window.cvso_config.BLOCK_MAX_LEVEL.value;
             if (newMap[y][x] < 0) newMap[y][x] = 0;
         }
 
@@ -133,7 +133,7 @@ export class Canvas {
     randomMap() {
         for (let y = 0; y < this.nBlockH; y++) {
             const setBlock = (x, y, level) => this.map[y][x] = level;
-            for (let x = 0; x < this.nBlockW; x++) setBlock(x, y, Math.floor(Math.random() * (window.BLOCK_MAX_LEVEL + 1)));
+            for (let x = 0; x < this.nBlockW; x++) setBlock(x, y, Math.floor(Math.random() * (window.cvso_config.BLOCK_MAX_LEVEL.value + 1)));
         }
     }
 }
